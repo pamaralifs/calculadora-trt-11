@@ -1,0 +1,25 @@
+{% extends 'feriado/base.html' %}
+{% block conteudo %}
+<div class="d-flex justify-content-center mb-5"></div>
+<br>
+   <div>
+       <div class="card-header" style="background-color: rgb(185, 185, 185);">
+           <h4>FERIADO (ou dia não útil)</h4>
+       </div>
+       <div class="card-body" style="background-color: rgb(197, 248, 190);">
+           <p><strong>CÓDIGO:</strong> {{ feriado.id | stringformat:'04d' }}</p>
+           <p><strong>DATA:</strong> {{ feriado.data_feriado }}</p>
+           <p><strong>DESCRIÇÃO/MOTIVO:</strong> {{ feriado.descricao }}</p>
+           <a href="{% url 'feriado:feriado_delete' feriado.id %}" class="btn btn-danger"><i
+                   class="far fa-trash-alt"></i> Excluir</a>
+           <a href="{% url 'feriado:feriado_update' feriado.id %}" class="btn btn-warning">
+               <i class="far fa-edit"></i> Alterar</a>
+           <a href="javascript:void(0)" onClick="history.go(-1); return false;" class="btn btn-success">
+           <i class="far fa-caret-square-left"></i> Voltar</a>
+           <!-- <a href="{% url 'feriado:feriado_read' %}" class="btn btn-success">
+               <i class="fas fa-search"></i>Consultar</a> -->
+       </div>
+   </div>
+</div>
+{% endblock %}
+

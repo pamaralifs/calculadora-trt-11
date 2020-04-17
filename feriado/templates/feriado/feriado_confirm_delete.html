@@ -1,0 +1,25 @@
+{% extends 'feriado/base.html' %}
+{% block conteudo %}
+<div class="d-flex justify-content-center mb-5"></div>
+<br>
+   <div>
+       <div class="card-header" style="background-color: rgb(185, 185, 185);">
+           <h4>FERIADO (ou dia não útil)</h4>
+       </div>
+       <div class="card-body" style="background-color: rgb(255, 185, 185);">
+           <h4>Deseja realmente apagar este registro?</h4>
+           <br>
+           <p><strong>CÓDIGO:</strong> {{ feriado.id | stringformat:'04d' }}</p>
+           <p><strong>DATA:</strong> {{ feriado.data_feriado }}</p>
+           <p><strong>DESCRIÇÃO/MOTIVO:</strong> {{ feriado.descricao }}</p>
+           <form id="formExcluir" data-toggle="validator" role="form" method="post">
+               {% csrf_token %}
+               <button type="submit" class="btn btn-danger">
+                   <i class="far fa-trash-alt"></i> Excluir</button>
+               <a href="javascript:void(0)" onClick="history.go(-1); return false;" 
+                   class="btn btn-success"><i class="far fa-window-close"></i> Cancelar</a>
+           </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
