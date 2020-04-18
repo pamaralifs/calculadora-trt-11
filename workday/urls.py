@@ -18,8 +18,8 @@ from django.urls import path,include
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('',  TemplateView.as_view(template_name='feriado/index.html')),
-    path('feriado/',include('feriado.urls',namespace='feriado')),
+    #path('',  TemplateView.as_view(template_name='feriado/index.html')),
+    path('',include('feriado.urls',namespace='feriado')),
     path('admin/', admin.site.urls),
     #path('',  TemplateView.as_view(template_name='core/index.html')),
 ]

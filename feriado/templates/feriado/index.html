@@ -1,24 +1,65 @@
 {% extends 'feriado/base.html' %}
+{% load crispy_forms_tags %}
 {% block conteudo %}
+{% if not lista_dias %}
     <div class="starter-template">
       <br>
       <br>
       <br>
       <h2>Calculadora de data de expiração TRT-11</h2>
-      <p class="lead">Seja bem-vindo!
-        <br>Para usá-la, acesse o menu acima e suga os seguintes passos:
+      <p class="lead"><strong>Seja bem-vindo!</strong></p>
+        <div class="card-body" style="background-color:silver">
+            <form id="formCalcular" data-toggle="validator" role="form" method="get">
+                <table class="table-sm table-responsive-sm">
+                    {{ form|crispy }}
+                </table>
+                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Calcular Data Expiração</button>
+            </form>
+        </div>
+        <div>(*) Campos de preenchimento obrigatório.</div>
+        <br>Para usar a calculadora, siga os seguintes passos:
+      
         <ul>
-        <li>Clique no ícone do calendário e informe a data de ciência;</li>
-        <li>Informe também a quantidade de dias úteis para contagem;</li>
-        <li>Em seguida, clique no botão "Calcular Data Expiração".</li>
-        <br>
-        <li>Em "Feriados&#9662;":</li>
-        <ul>
-          <li>Cadastre e edite feriados (e/ou dias considerados não úteis);</li>
-          <li>Não é necessário cadastrar datas correspondentes a sábados e domingos.</li>
-        </ul>          
+           <li>No formulário acima:
+               <ul>
+                  <li>Informe a data de ciência;</li>
+                  <li>Informe também a quantidade de dias úteis para contagem;</li>
+                  <li>Em seguida, clique no botão "Calcular Data Expiração".</li>                   
+               </ul>
+               <br>
+           <li>No menu "Feriados&#9662;":</li>
+               <ul>
+                  <li>Cadastre, consulte e edite feriados (e/ou dias considerados não úteis);</li>
+                  <li>Não é necessário cadastrar datas correspondentes a sábados e domingos.</li>
+               </ul>
         </ul>
-
-      </p>
     </div>
+{% else %}
+    <div class="d-flex justify-content-center mb-5"></div>
+    <br>
+       <div>
+           <div class="card-header" style="background-color: rgb(185, 185, 185);">
+               <h4>RESULTADO DO CÁLCULO DA DATA DE EXPIRAÇÃO</h4>
+           </div>
+           <div class="card-body" style="background-color: rgb(197, 248, 190);">
+               <p><strong>Data de ciência:</strong> {{ data_ciencia }}</p>
+               <p><strong>Quantidade de dias úteis:</strong> {{ qtd_dias }}</p>
+               <p><strong>Data útil da expiração*:<span style="color:red"> {{ data_expiracao }}</span></strong></p>
+               <p></p>
+               <div class="card-footer" style="background-color:beige;">
+                <h5>Considerações:</h5>
+                <ul>
+                    <li>(*) Data de expiração calculada com base nos feriados e/ou dias não úteis cadastrados.</li>
+                    <li><strong>Período discriminado:</strong></li>
+                    <ul>
+                        {% for data in lista_dias %}
+                        <li>{{ data|safe }}</li> {# html escapado com safe #}
+                        {% endfor %}
+                    </ul>
+                </ul>
+            </div>               
+            </div>
+       </div>
+    </div>
+{% endif %}
 {% endblock %}

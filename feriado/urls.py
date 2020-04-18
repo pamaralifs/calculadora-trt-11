@@ -8,10 +8,12 @@ from .views import *
 app_name = 'feriado'
 
 urlpatterns = [
-    #path('',  TemplateView.as_view(template_name='feriado/index.html')),
+    #path('', TemplateView.as_view(template_name='feriado/index.html')),
+    path('', FeriadoCalcularDataExpiracao.as_view(),name='feriado_calcular'),
     path('create/', FeriadoCreate.as_view(), name='feriado_create'),
     path('read/', FeriadoList.as_view(), name='feriado_read'),
     path('update/<int:pk>', FeriadoUpdate.as_view(), name='feriado_update'),
     path('delete/<int:pk>', FeriadoDelete.as_view(), name='feriado_delete'),
     path('detail/<int:pk>', FeriadoDetail.as_view(), name='feriado_detail'),
+    path('creditos/', TemplateView.as_view(template_name='feriado/creditos.html'),name='feriado_creditos')
 ]

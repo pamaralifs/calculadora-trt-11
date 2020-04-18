@@ -1,7 +1,6 @@
 from django import forms
 from django.forms.widgets import TextInput
-
-from feriado.models import Feriado
+from feriado.models import Feriado, validate_weekend
 
 
 class DateInput(forms.DateInput): #CLASSE IA SER USADA ABAIXO em data_feriado para assumir widget html5 padrão
@@ -9,8 +8,9 @@ class DateInput(forms.DateInput): #CLASSE IA SER USADA ABAIXO em data_feriado pa
     #placeholder = 'DD/MMm/aaaa' não funcionou
     #id='data_ciencia' a intenção era pegar o calendário do bootstrap mas não funcionou
 
+#FORM DO CRUD
 class FeriadoFormCreateUpdate(forms.ModelForm):
-    data_feriado = forms.DateField(label='DATA',error_messages = {
+    data_feriado = forms.DateField(validators=[validate_weekend],label='DATA',error_messages = {
                 'required': 'Informe a data!',
                 'unique': 'Já existe um FERIADO cadastrado com esta DATA!'
     },widget=TextInput(attrs={'type':'date'}))
@@ -20,3 +20,9 @@ class FeriadoFormCreateUpdate(forms.ModelForm):
     class Meta:
         model = Feriado
         exclude = ['id']
+    
+#FORM DO INDEX
+class FormCalcular(forms.Form):
+    data_ciencia = forms.DateField(label='Data de ciência',widget=forms.TextInput(attrs={'type':'date','id':'data_ciencia','class':'form-control','placeholder':'(Data de ciência)'})) #precisou colocar o id por causa do datapicker
+    qtd_dias = forms.IntegerField(label='Quantidade de dias para contagem',min_value=1,widget=forms.NumberInput(attrs={'':'','class':'form-control','placeholder':'(Qtde dias)'}))
+
