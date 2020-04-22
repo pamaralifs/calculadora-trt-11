@@ -1,7 +1,9 @@
 {% extends 'feriado/base.html' %}
 {% load crispy_forms_tags %}
 {% block conteudo %}
+{# SE A VARIAVEL DE CONTEXT LISTA_DIAS NAO ESTIVER VAZIA A MESMA PAGINA EXIBIRA O RESULTADO DO CALCULO #}
 {% if not lista_dias %}
+{#{% if form.errors %} ASSIM NAO FUNCIONA#} 
     <div class="starter-template">
       <br>
       <br>
@@ -9,7 +11,10 @@
       <h2>Calculadora de data de expiração TRT-11</h2>
       <p class="lead"><strong>Seja bem-vindo!</strong></p>
         <div class="card-body" style="background-color:silver">
-            <form id="formCalcular" data-toggle="validator" role="form" method="get">
+            <form id="formCalcular" data-toggle="validator" role="form" method="POST">
+                {% csrf_token %}
+                {#{{ form.errors }}#}
+                {#{{ form.data_ciencia.errors }}#}
                 <table class="table-sm table-responsive-sm">
                     {{ form|crispy }}
                 </table>

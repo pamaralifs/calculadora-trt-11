@@ -1,7 +1,6 @@
 from django import forms
 from django.forms.widgets import TextInput
-from feriado.models import Feriado, validate_weekend
-
+from feriado.models import Feriado, validate_weekend, validate_dia_nao_util
 
 class DateInput(forms.DateInput): #CLASSE IA SER USADA ABAIXO em data_feriado para assumir widget html5 padrão
     input_type = 'date' #para poder abrir o calendário
@@ -12,7 +11,7 @@ class DateInput(forms.DateInput): #CLASSE IA SER USADA ABAIXO em data_feriado pa
 class FeriadoFormCreateUpdate(forms.ModelForm):
     data_feriado = forms.DateField(validators=[validate_weekend],label='DATA',error_messages = {
                 'required': 'Informe a data!',
-                'unique': 'Já existe um FERIADO cadastrado com esta DATA!'
+                'unique': 'Já existe um FERIADO (ou dia não útil) cadastrado com esta DATA!'
     },widget=TextInput(attrs={'type':'date'}))
             #},widget=DateInput()) #label_suffix='' funciona no create mas não funciona no update
     descricao = forms.CharField(label='DESCRIÇÃO/MOTIVO',widget=forms.Textarea(attrs={'rows':'3','columns':'10'}))
@@ -23,6 +22,16 @@ class FeriadoFormCreateUpdate(forms.ModelForm):
     
 #FORM DO INDEX
 class FormCalcular(forms.Form):
-    data_ciencia = forms.DateField(label='Data de ciência',widget=forms.TextInput(attrs={'type':'date','id':'data_ciencia','class':'form-control','placeholder':'(Data de ciência)'})) #precisou colocar o id por causa do datapicker
+    data_ciencia = forms.DateField(validators=[validate_dia_nao_util],label='Data de ciência',widget=forms.TextInput(attrs={'type':'date','id':'data_ciencia','class':'form-control','placeholder':'(Data de ciência)'})) #precisou colocar o id por causa do datapicker
     qtd_dias = forms.IntegerField(label='Quantidade de dias para contagem',min_value=1,widget=forms.NumberInput(attrs={'':'','class':'form-control','placeholder':'(Qtde dias)'}))
+    #
+    # def clean_data_ciencia(self):
+    #    data = self.cleaned_data.get("data_ciencia")
+    #    print("data:",data)
+    #    q = Feriado.objects.filter(data_feriado = data)
+    #    print("q:",q)        
+    #    #if not "yourdomain.com" in email_passed:
+    #    if q:
+    #        raise forms.ValidationError(q,"Sorry, the email submitted is invalid. All emails have to be registered on this domain only.")
+    #    return data
 
