@@ -63,7 +63,7 @@ class FeriadoCalcularDataExpiracao(FormView):
         #-------------------
         DIAS = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-Feira','Sexta-feira','Sábado','Domingo']
         lista_dias = []
-        lista_feriados = []
+        #lista_feriados = []
         #pega dados do formulário web submetido pelo internauta
         data_ciencia = self.request.POST.get('data_ciencia', '')
         qtd_dias = self.request.POST.get('qtd_dias', '')
@@ -90,7 +90,7 @@ class FeriadoCalcularDataExpiracao(FormView):
             #soma 1 dia a data de ciência (começa a contar 1 dia depois da data de ciência)
             #o dia seguinte, ou seja, data buscacontinua sendo só tipo date (e não datetime)
             data_busca = data_ciencia
-            lista_dias.append('<span style="color:red">' + data_busca.strftime('%d/%m/%Y') + ' - ' + DIAS[data_busca.weekday()] + ' (Data de ciência)</span>')
+            lista_dias.append('<span style="color:red"><strong>' + data_busca.strftime('%d/%m/%Y') + ' - ' + DIAS[data_busca.weekday()] + ' - DATA DE CIÊNCIA</strong></span>')
             while contador < qtd_dias:
                 data_busca = data_busca + datetime.timedelta(days=1)
                 #https://dicasdepython.com.br/python-como-identificar-o-dia-da-semana-de-uma-data/
@@ -113,23 +113,28 @@ class FeriadoCalcularDataExpiracao(FormView):
                     # monta lista de datas de finais de semana
                     #print(' ---> data busca',data_busca,DIAS[data_busca.weekday()])
                     if data_busca.weekday() in (5, 6):
-                        lista_dias.append('<span style="color:red">' + data_busca.strftime('%d/%m/%Y') + ' - ' + DIAS[data_busca.weekday()] + '</span>')
+                        lista_dias.append('<span style="color:red"><strong>' + data_busca.strftime('%d/%m/%Y') + ' - ' + DIAS[data_busca.weekday()] + '</strong></span>')
                     else:
-                        lista_dias.append('<span style="color:red">' + data_busca.strftime('%d/%m/%Y') + ' - ' + DIAS[data_busca.weekday()] + ' ('+ q[0].descricao +')</span>')
+                        lista_dias.append('<span style="color:red"><strong>' + data_busca.strftime('%d/%m/%Y') + ' - ' + DIAS[data_busca.weekday()] + ' - '+ q[0].descricao +'</strong></span>')
                     #incrementa a data de busca em mais um dia
                 
             # monta as demais variáveis de contexto
             # monta lista de feriados arrolados durante o período entre a data de ciência
             # e a data de expiração, ao sair do loop da contagem de dias
-            feriados = Feriado.objects.filter(data_feriado__gt = data_ciencia,data_feriado__lte = data_busca)
-            for obj in feriados:
-                lista_feriados.append(obj.data_feriado.strftime('%d/%m/%Y') + ' - ' + DIAS[obj.data_feriado.weekday()])
+            #feriados = Feriado.objects.filter(data_feriado__gt = data_ciencia,data_feriado__lte = data_busca)
+            #for obj in feriados:
+            #    lista_feriados.append(obj.data_feriado.strftime('%d/%m/%Y') + ' - ' + DIAS[obj.data_feriado.weekday()])
             # data de expiração que é a última data de busca convertida para string
             context['data_expiracao'] = data_busca.strftime('%d/%m/%Y')
             # lista de finais de semana no período entre data ciência e data expiração
+            #acrescenta texto INÍCIO DO PRAZO ao segundo elemento da lista_dias (primeiro dia efetivamente útil)
+            lista_dias[1] = lista_dias[1] + ' - <span style="color:black"><strong>INÍCIO DO PRAZO</strong></span>'
+            # acrescenta texto FIM DO PRAZO ao último elemento da lista_dias
+            ultimo = len(lista_dias) - 1
+            lista_dias[ultimo] = lista_dias[ultimo] + ' - <span style="color:black"><strong>FIM DO PRAZO</strong></span>'
             context['lista_dias'] = lista_dias           
             # lista de feriados no período entre data ciência e data expiração
-            context['lista_feriados'] = lista_feriados
+            #context['lista_feriados'] = lista_feriados
             # devolve data ciência
             context['data_ciencia'] = data_ciencia.strftime('%d/%m/%Y')
             # devolve quantidade de dias de contagem
