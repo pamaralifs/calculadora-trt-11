@@ -113,7 +113,7 @@ class FeriadoCalcularDataExpiracao(FormView):
                     # monta lista de datas de finais de semana
                     #print(' ---> data busca',data_busca,DIAS[data_busca.weekday()])
                     if data_busca.weekday() in (5, 6):
-                        lista_dias.append('<span style="color:red"><strong>' + data_busca.strftime('%d/%m/%Y') + ' - ' + DIAS[data_busca.weekday()] + '</strong></span>')
+                        lista_dias.append('<span style="color:blue"><strong>' + data_busca.strftime('%d/%m/%Y') + ' - ' + DIAS[data_busca.weekday()] + '</strong></span>')
                     else:
                         lista_dias.append('<span style="color:red"><strong>' + data_busca.strftime('%d/%m/%Y') + ' - ' + DIAS[data_busca.weekday()] + ' - '+ q[0].descricao +'</strong></span>')
                     #incrementa a data de busca em mais um dia
