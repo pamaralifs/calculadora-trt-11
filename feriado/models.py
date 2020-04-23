@@ -29,7 +29,7 @@ def validate_weekend(value):
 # como "data de ciência" num form submmit       
 def validate_dia_nao_util(value):
     q = Feriado.objects.filter(data_feriado = value)
-    print("q in validators:",q)
+    #print("q in validators:",q)
     if q:
         #print("q in validators:",q)
         raise ValidationError(
