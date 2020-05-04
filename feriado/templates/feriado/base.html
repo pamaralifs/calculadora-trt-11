@@ -59,12 +59,24 @@
         <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Feriado (ou dia não útil)</a>
         <div class="dropdown-menu" aria-labelledby="dropdown01">
           <a class="dropdown-item" href="{% url 'feriado:feriado_create' %}">Cadastrar</a>
-          <a class="dropdown-item" href="{% url 'feriado:feriado_read' %}">Listar/Editar</a>
+          <a class="dropdown-item" href="{% url 'feriado:feriado_read' %}">Listar todos/Editar</a>
         </div>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{% url 'feriado:feriado_creditos' %}">Créditos</a>
       </li>
+      {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+           <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Usuário: {{ user.get_username }}</a>
+           <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item" href="{% url 'logout' %}?next={{request.path}}">Logout</a>
+           </div>
+        </li>
+      {% else %}
+        <li>
+          <a class="nav-link" href="{% url 'login' %}?next={{request.path}}">Login</a>
+        </li>   
+      {% endif %} 
     </ul>
 <!-- sss -->
   </div>

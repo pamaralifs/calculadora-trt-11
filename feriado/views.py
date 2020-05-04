@@ -1,38 +1,76 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView,TemplateView
 from django.views.generic.edit import FormView
 from .models import Feriado
-from .forms import FeriadoFormCreateUpdate, FormCalcular
+from .forms import FeriadoFormCreateUpdate, FormCalcular, FormBusca
 import datetime  # para usar suas funções
+import os
 # Create your views here.
 
 #VISTAS CRUDDs
 #CREATE
-class FeriadoCreate(CreateView):
+class FeriadoCreate(LoginRequiredMixin,CreateView):
     model = Feriado
     form_class = FeriadoFormCreateUpdate
     #fields = ['data_feriado', 'descricao',]
     success_url = reverse_lazy('feriado:feriado_read') 
+    #login_url = '/usuario/login'  coloquei em Settings.py
+    #redirect_field_name = 'redirect_to' preferi mesmo usar o parâmetro default "next"
 
 #READ
 class FeriadoList(ListView):
     model = Feriado
-    ordering = ['-data_feriado']  #mostrar da data mais recente para a mais antiga
+    #ordering = ['-data_feriado']  #NÃO FUNCIONOU COM O FILTRO mostrar da data mais recente para a mais antiga
     paginate_by = 3 # para o celular melhor 3 registros por página
+    form_class = FormBusca
+    template_name = "feriado/feriado_list.html"
+    #success_url = reverse_lazy("feriado:feriado_read") #um form_valid redireciona para success_url
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["total_registros"] = Feriado.objects.count()
+        context = super(FeriadoList,self).get_context_data(**kwargs)
+        context["total_registros"] = self.total_registros_filtro
+        context['form'] = FormBusca # Insere o form no contexto do template
+        MESES = {'01':'JANEIRO','02':'FEVEREIRO','03':'MARÇO','04':'ABRIL','05':'MAIO','06':'JUNHO','07':'JULHO',
+            '08':'AGOSTO','09':'SETEMBRO','10':'OUTUBRO','11':'NOVEMBRO','12':'DEZEMBRO'}
+        context['mes'] = self.request.GET.get('mes',None)
+        context['ano'] = self.request.GET.get('ano',None)
+        mes_nome = self.request.GET.get('mes',None)
+        if context['mes'] and context['ano']:
+            print(context['mes'] , context['ano'])
+            context['filtro'] = 'FILTRO: ' + MESES[mes_nome] + '/' + context['ano']
+        elif not context['mes'] and context['ano']:
+            context['filtro'] = 'FILTRO: Ano ' + context['ano']
+        else:
+            context['filtro'] = 'TODOS'
         return context
+
+    def get_queryset(self):  #É NECESSÁRIO ESSA FUNÇÃO SE NÃO A PAGINAÇÃO GET SE PERDE SOMENTE COM A FUNÇÃO ACIMA
+        mes = self.request.GET.get('mes',None)
+        ano = self.request.GET.get('ano',None)
+        if mes and ano:
+            feriados = Feriado.objects.filter(data_feriado__year=ano,
+                                 data_feriado__month=mes).order_by('data_feriado')
+            self.total_registros_filtro = feriados.count()
+            return feriados
+        elif ano:
+            feriados = Feriado.objects.filter(data_feriado__year=ano).order_by('data_feriado')
+            self.total_registros_filtro = feriados.count()
+            return feriados
+        else:
+            feriados = Feriado.objects.all().order_by('data_feriado')
+            self.total_registros_filtro = feriados.count()
+            return feriados
+
 #UPDATE 
-class FeriadoUpdate(UpdateView):
+class FeriadoUpdate(LoginRequiredMixin,UpdateView):
     model = Feriado
     form_class = FeriadoFormCreateUpdate
     #fields = ['data_feriado', 'descricao',]
     success_url = reverse_lazy('feriado:feriado_read')
 #DELETE
-class FeriadoDelete(DeleteView):
+class FeriadoDelete(LoginRequiredMixin,DeleteView):
     model = Feriado
     success_url = reverse_lazy('feriado:feriado_read')
 
@@ -50,16 +88,57 @@ class FeriadoCalcularDataExpiracao(FormView):
     success_url = reverse_lazy("feriado:feriado_calcular") #um form_valid redireciona para success_url
     model = Feriado
 
+    def get_context_data(self, **kwargs):
+        context = super(FeriadoCalcularDataExpiracao,self).get_context_data(**kwargs)
+        #Ler contador de acessos
+        if not os.path.exists(os.path.abspath('acessos.txt')):
+            arquivo = open(os.path.abspath('acessos.txt'), 'w')
+        else:
+            arquivo = open(os.path.abspath('acessos.txt'),'r+')
+        linha = arquivo.readline()
+        arquivo.close()
+        linha = linha.rstrip()
+        if linha == '':
+            context['acessos'] = '001'
+        else:
+            cont = int(linha) + 1
+            if cont > 99:
+                context['acessos'] = str(cont)
+            elif (cont > 9):
+                context['acessos'] = '0' + str(cont)
+            else:
+                context['acessos'] = '00' + str(cont)
+        return context
+
     #Estou usando o form_valid com self.response para retornar à mesma página do formulário (success_url)
     #após o cálculo, porém sem exibir o form submmit, apenas o resultado do cálculo
     #pois usando o método get_context_data comentado docstring abaixo não dava certo
     def form_valid(self, form,**kwargs): #tive que inserir este terceiro parâmetro **kwargs
-        #print("form válido primeiro!")
         context = super(FeriadoCalcularDataExpiracao,self).get_context_data(**kwargs)
         context['form'] = FormCalcular # Insere o form no contexto do template
-        #print('TESTE',self.request.GET.get('email'))
-        data_ciencia = self.request.POST.get('data_ciencia')
-        qtd_dias = self.request.POST.get('qtd_dias')
+        #Atualiza contador de acessos
+        if not os.path.exists(os.path.abspath('acessos.txt')):
+            arquivo = open(os.path.abspath('acessos.txt'), 'w')
+        else:
+            arquivo = open(os.path.abspath('acessos.txt'),'r+')
+        linha = arquivo.readline()
+        linha = linha.rstrip()
+        if linha == '':
+            arquivo.seek(0)
+            arquivo.write('1\n')
+            arquivo.close()
+            context['acessos'] = '001'
+        else:
+            cont = int(linha) + 1
+            arquivo.seek(0)
+            arquivo.write(str(cont))
+            arquivo.close()
+            if cont > 99:
+                context['acessos'] = str(cont)
+            elif (cont > 9):
+                context['acessos'] = '0' + str(cont)
+            else:
+                context['acessos'] = '00' + str(cont)
         #-------------------
         DIAS = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-Feira','Sexta-feira','Sábado','Domingo']
         lista_dias = []

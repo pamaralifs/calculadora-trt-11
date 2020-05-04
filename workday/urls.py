@@ -23,3 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #path('',  TemplateView.as_view(template_name='core/index.html')),
 ]
+
+#Add Django site authentication urls (for login, logout, password management)
+urlpatterns += [
+    path('usuario/', include('django.contrib.auth.urls')),
+]

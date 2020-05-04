@@ -4,12 +4,20 @@
     <div>
       <br>
       <br>
-      <br>
+      <form id="formBusca" method="GET">
+        <p style="margin:5px 0 0 0"><strong>Listar Apenas Feriados de:</strong></p>
+        <div class="form-inline">
+          {{ form.mes }}/{{ form.ano }}&nbsp;
+          &nbsp;<button class="btn btn-secondary my-2 my-sm-0" type="submit"><i
+            class="fas fa-search-plus" title="Ver"></i></button>
+          &nbsp;<button class="btn btn-secondary my-2 my-sm-0" type="reset">Limpar</button>
+        </div>
+    </form>     
       {#{% if object_list %}#}
-      <table class="table table-hover table-bordered table-sm table-responsive-sm">
+      <table class="table table-hover table-bordered table-sm table-responsive-sm" style="margin:0 0 0 0">
         <thead class="text-center" style="background-color: rgb(185, 185, 185);">
           <tr>
-            <th colspan="4">FERIADO{{ object_list|pluralize:'S' }} (E DIAS NÃO ÚTEIS) JÁ CADASTRADOS</th>
+            <th colspan="4">FERIADO{{ object_list|pluralize:'S' }} (E DIAS NÃO ÚTEIS) JÁ CADASTRADOS - <span style="background-color:yellow">{{ filtro }}</span></th>
           </tr>
           <tr>
             <th width='200'>DATA</th>
@@ -26,21 +34,18 @@
               <a href="{% url 'feriado:feriado_delete' feriado.id %}" class="btn btn-danger"><i
                   class="far fa-trash-alt" title="Excluir"></i></a>
               <a href="{% url 'feriado:feriado_update' feriado.id %}" class="btn btn-primary"><i
-                  class="far fa-edit"  title="Alterar"></i> </a>
+                  class="far fa-edit"  title="Alterar"></i></a>
               <a href="{% url 'feriado:feriado_detail' feriado.id %}" class="btn btn-success"><i
-                  class="fas fa-search-plus" title="Ver"></i> </a>
+                  class="fas fa-search-plus" title="Ver"></i></a>
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
       {#{% endif %}#}
-      <strong>Total de registros exibidos nesta página:</strong>&nbsp;{{ feriado_list.count }}
-      <br>
-      <strong>TOTAL GERAL de registros cadastrados:</strong>&nbsp;{{ total_registros }}
+      <p style="margin:0 0 0 0"><strong>Total de registros exibidos nesta página:</strong>&nbsp;{{ feriado_list.count }}</p>
+      <p style="margin:0 0 0 0"><strong>TOTAL GERAL de registros filtrados:</strong>&nbsp;{{ total_registros }}</p>
        {# .... **Now the pagination section** .... #}
       {% include "feriado/paginacao.html" %}
-      <p></p>      
-      <a href="{% url 'feriado:feriado_create' %}" class="btn btn-primary">Cadastrar Novo Feriado</a>
     </div> 
 {% endblock %}

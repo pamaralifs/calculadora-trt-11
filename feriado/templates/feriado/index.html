@@ -9,7 +9,8 @@
       <br>
       <br>
       <h2>Calculadora de data de expiração TRT-11</h2>
-      <p class="lead"><strong>Seja bem-vindo!</strong></p>
+      <h4>Seja bem-vindo!</h4>
+      <p style="margin:0 0 0 0"><strong>({{ acessos }} Acessos)</strong></p>
         <div class="card-body" style="background-color:silver">
             <form id="formCalcular" data-toggle="validator" role="form" method="POST">
                 {% csrf_token %}
@@ -34,8 +35,9 @@
                <br>
            <li>No menu "Feriado (ou dia não útil)&#9662;":</li>
                <ul>
-                  <li>Cadastre, consulte e edite feriados (e/ou dias considerados não úteis);</li>
-                  <li>Não é necessário cadastrar datas correspondentes a sábados e domingos.</li>
+                  <li>Liste e consulte livremente todos os feriados (e/ou dias considerados não úteis) já cadastrados;</li>
+                  <li>Porém, para cadastrar um novo feriado (ou editar) é necessário ser o administrador e efetuar o login;</li>
+                  <li>O sistema não permite cadastrar datas correspondentes a sábados e domingos.</li>
                </ul>
         </ul>
     </div>
@@ -52,17 +54,22 @@
                <p><strong>Data útil da expiração*:<span style="color:red"> {{ data_expiracao }}</span></strong></p>
                <p></p>
                <div class="card-footer" style="background-color:beige;">
-                <h5>Considerações:</h5>
-                <ul>
-                    <li>(*) Data de expiração calculada com base nos feriados e/ou dias não úteis cadastrados.</li>
-                    <li><strong>Período discriminado:</strong></li>
-                    <ul>
-                        {% for data in lista_dias %}
-                        <li>{{ data|safe }}</li> {# html escapado com safe #}
-                        {% endfor %}
-                    </ul>
-                </ul>
-            </div>               
+                   <h5>Considerações:</h5>
+                   <ul>
+                       <li>(*) Data de expiração calculada com base nos feriados e/ou dias não úteis cadastrados.</li>
+                       <li><strong>Período discriminado:</strong></li>
+                       <ul>
+                           {% for data in lista_dias %}
+                           <li>{{ data|safe }}</li> {# html escapado com safe #}
+                           {% endfor %}
+                       </ul>
+                   </ul>
+                   <div class="row">
+                      <div style="width:19px; height:19px; background-color:red"></div>&nbsp;Dia não útil ou feriado&nbsp;&nbsp;
+                      <div style="width:19px; height:19px; background-color:blue"></div>&nbsp;Final de semana&nbsp;&nbsp;
+                      <div style="width:19px; height:19px; background-color:black"></div>&nbsp;<strong>Dia útil</strong>
+                   </div>
+                </div>               
             </div>
        </div>
     </div>

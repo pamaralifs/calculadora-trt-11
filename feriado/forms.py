@@ -35,3 +35,17 @@ class FormCalcular(forms.Form):
     #        raise forms.ValidationError(q,"Sorry, the email submitted is invalid. All emails have to be registered on this domain only.")
     #    return data
 
+#FORM FILTRO BUSCA
+DIA_CHOICES = [('','')]
+DIA_CHOICES += [(dia, dia) for dia in range(1, 32)]
+MES_CHOICES = [('',''),('01','Janeiro'),('02','Fevereiro'),('03','Março'),('04','Abril'),('05','Maio'),('06','Junho'),
+    ('07','Julho'),('08','Agosto'),('09','Setembro'),('10','Outubro'),('11','Novembro'),('12','Dezembro')]
+#months = [(month, month) for month in range(1, 13)]
+#ANO_CHOICES = [(ano, ano) for ano in [2018, 2019, 2020]]
+class FormBusca(forms.Form):
+    #required=False
+    #dia = forms.ChoiceField(label='Dia',choices=DIA_CHOICES,initial='',widget=forms.Select(attrs={'class':'form-control','style':'width:70px'}))
+    mes = forms.ChoiceField(label='Mês',choices=MES_CHOICES,initial='',required=False,widget=forms.Select(attrs={'class':'form-control','style':'width:123px'}))
+    ano = forms.IntegerField(label='Ano',min_value=1900,max_value=2100,error_messages={
+                'required': 'Informe o ano com 4 dígitos!'},widget=forms.NumberInput(attrs={'class':'form-control','placeholder':'aaaa','style':'width:75px'}))
+    #ano É DE PREENCHIMENTO OBRIGATÓRIO, ou seja, não tem required=False

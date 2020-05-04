@@ -6,3 +6,7 @@ __pycache__
 /static
 .DS_Store
 db.sqlite3
+acessos.txt
+to-do.txt
+bootstrap-4.4.1.zip
+bootstrap-datepicker-1.9.0-dist.zip

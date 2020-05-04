@@ -1,0 +1,74 @@
+{% if is_paginated %}
+   <div class="pagination">
+       {# CÓDIGO ATUAL MAIS ENXUTO #}
+       {# https://stackoverflow.com/questions/41131802/django-paginator-page-range-for-not-displaying-all-numbers #}
+       {#{ page_obj.paginator.page=1} #}
+       {% if page_obj.has_previous %}
+          <a href="{{ request.path }}?page=1" class="btn btn-warning"><i class="fas fa-step-backward"></i></a>&nbsp;
+          <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}" class="btn btn-warning"><i class="fas fa-caret-left"></i></a>&nbsp;
+       {% endif %}
+       <!---->
+       {% for l in  page_obj.paginator.page_range %}
+          {% if l <= page_obj.number|add:1 and l >= page_obj.number|add:-1 %}
+              {# ANTES ERA SÓ ESSA LINHA <li><a href="?page={{forloop.counter}}">{{forloop.counter}}</a></li>#}
+              {% if page_obj.number == forloop.counter %}
+                 <a href="?page={{forloop.counter}}" class="current btn btn-success">{{forloop.counter}}</a>&nbsp;
+              {% else %}
+                 <a href="?page={{forloop.counter}}" class="btn btn-warning">{{forloop.counter}}</a>&nbsp;
+              {% endif %}
+          {% endif %}
+       {% endfor %}
+       <!---->
+       {% if page_obj.has_next %}
+          <a href="{{ request.path }}?page={{ page_obj.next_page_number }}" class="btn btn-warning"><i class="fas fa-caret-right"></i></a>&nbsp;
+          <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}" class="btn btn-warning"><i class="fas fa-step-forward"></i></a>&nbsp;
+       {% endif %}
+       <a href="{% url 'feriado:feriado_create' %}" class="btn btn-primary">Novo</a>
+   </div>
+
+   {#NOVO CÓDIGO#}
+   {% if mes and ano %}
+  <div class="pagination">
+      {% if page_obj.has_previous %}
+          <a href="{{ request.path }}?mes={{ mes }}&amp;ano={{ ano }}&amp;page={{ page_obj.previous_page_number }}" class="btn btn-warning">&lt; Anterior</a>&nbsp;
+      {% endif %}
+      {% for pagina in page_obj.paginator.page_range %}
+          {% if page_obj.number == pagina %}
+              <span class="current btn btn-success">{{ pagina }}</span>&nbsp;
+          {% else %}
+              <a href="{{ request.path }}?mes={{ mes }}&amp;ano={{ ano }}&amp;page={{ pagina }}" class="btn btn-warning">{{ pagina }}</a>&nbsp;
+          {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+          <a href="{{ request.path }}?mes={{ mes }}&amp;ano={{ ano }}&amp;page={{ page_obj.next_page_number }}" class="btn btn-warning">Próxima &gt;</a>
+      {% endif %}
+
+
+      {# CÓDIGO ATUAL MAIS ENXUTO #}
+      {# https://stackoverflow.com/questions/41131802/django-paginator-page-range-for-not-displaying-all-numbers #}
+      {#{ page_obj.paginator.page=1} #}
+      {% if page_obj.has_previous %}
+         <a href="{{ request.path }}?mes={{ mes }}&amp;ano={{ ano }}&amp;page=1" class="btn btn-warning"><i class="fas fa-step-backward"></i></a>&nbsp;
+         <a href="{{ request.path }}?mes={{ mes }}&amp;ano={{ ano }}&amp;page={{ page_obj.previous_page_number }}" class="btn btn-warning"><i class="fas fa-caret-left"></i></a>&nbsp;
+      {% endif %}
+      <!---->
+      {% for l in  page_obj.paginator.page_range %}
+         {% if l <= page_obj.number|add:1 and l >= page_obj.number|add:-1 %}
+             {# ANTES ERA SÓ ESSA LINHA <li><a href="?mes={{ mes }}&amp;ano={{ ano }}&amp;page={{forloop.counter}}">{{forloop.counter}}</a></li>#}
+             {% if page_obj.number == forloop.counter %}
+                <a href="?mes={{ mes }}&amp;ano={{ ano }}&amp;page={{forloop.counter}}" class="current btn btn-success">{{forloop.counter}}</a>&nbsp;
+             {% else %}
+                <a href="?mes={{ mes }}&amp;ano={{ ano }}&amp;page={{forloop.counter}}" class="btn btn-warning">{{forloop.counter}}</a>&nbsp;
+             {% endif %}
+         {% endif %}
+      {% endfor %}
+      <!---->
+      {% if page_obj.has_next %}
+         <a href="{{ request.path }}?mes={{ mes }}&amp;ano={{ ano }}&amp;page={{ page_obj.next_page_number }}" class="btn btn-warning"><i class="fas fa-caret-right"></i></a>&nbsp;
+         <a href="{{ request.path }}?mes={{ mes }}&amp;ano={{ ano }}&amp;page={{ page_obj.paginator.num_pages }}" class="btn btn-warning"><i class="fas fa-step-forward"></i></a>&nbsp;
+      {% endif %}
+      <a href="{% url 'feriado:feriado_create' %}" class="btn btn-primary">Novo</a>
+  </div>
+  {% endif %}
+
+{% endif %}

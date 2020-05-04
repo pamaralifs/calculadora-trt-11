@@ -58,7 +58,7 @@ ROOT_URLCONF = 'workday.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  ##NECESSSÁRIO PARA O LOGIN
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,3 +124,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'static/')
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+# Redirect to home URL after login (Default redirects to /usuario/profile/)
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/usuario/login'  #Se colocar aqui não precisa colocar login_url em todas views que necessitar

@@ -1,0 +1,14 @@
+{% extends "feriado/base.html" %}
+{% block conteudo %}
+   <div class="starter-template">
+       <br>
+       <br>
+       <br>
+       <h2>Calculadora de data de expiração TRT-11</h2>
+       <h4>Acesso do Administrador!</h4>
+       <div class="card-body" style="background-color:silver">
+          <p>Sessão de login do administrador encerrada!</p>  
+          <a href="{% url 'login'%}" class="btn btn-secondary my-2 my-sm-0">Efetuar login novamente</a>
+       </div>
+   </div>
+{% endblock %}

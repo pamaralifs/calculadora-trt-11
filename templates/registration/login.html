@@ -1,0 +1,33 @@
+{% extends 'feriado/base.html' %}
+{% load crispy_forms_tags %}
+{% block conteudo %}
+    <div class="starter-template">
+        <br>
+        <br>
+        <br>
+        <h2>Calculadora de data de expiração TRT-11</h2>
+        <h4>Acesso do Administrador!</h4>
+        <div class="card-body" style="background-color:silver">
+           {% if next != '/' and next != '/read/' and next != '/creditos/' and next != '/usuario/login/' %}
+             {% if user.is_authenticated %}
+               <p>Seu perfil de usuário não lhe dá acesso a esta página! Faça login com uma conta de usuário que tenha acesso.</p>
+             {% else %}
+               <p style="color:rgb(204, 15, 53)"><strong>Por favor, faça o login para ter acesso à operação desejada.</strong></p>
+             {% endif %}
+           {% endif %}
+           <form id="formLogin"  method="POST" action="{% url 'login' %}">
+              {% csrf_token %}
+              <table class="table-sm table-responsive-sm">
+                  {{ form|crispy }}
+              </table>
+              <button class="btn btn-secondary my-2 my-sm-0" type="submit">Login</button>
+              <a href="javascript:void(0)" onClick="history.go(-1); return false;" class="btn btn-success">
+                <i class="far fa-caret-square-left"></i> Voltar</a>
+              <input type="hidden" name="next" value="{{ next }}" />
+           </form>
+        </div>
+        {# Assumes you setup the password_reset view in your URLconf #}
+        {# <p><a href="{% url 'password_reset' %}">Lost password?</a></p> #}
+        <div>(*) Campos de preenchimento obrigatório.</div>
+  </div>
+{% endblock %}
